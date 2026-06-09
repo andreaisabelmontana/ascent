@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ascent — watch a tabular RL agent learn to climb</title>
+  <meta name="description" content="Ascent: an interactive MountainCar reinforcement-learning playground. Train Q-learning or SARSA live in your browser and watch the value surface, policy, and learned momentum strategy emerge." />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⛰️</text></svg>" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">⛰️ <strong>Ascent</strong> <span class="tag">tabular RL on MountainCar</span></div>
+    <a class="repo" href="https://github.com/andreaisabelmontana/ascent" target="_blank" rel="noopener">GitHub ↗</a>
+  </header>
+
+  <p class="intro">An underpowered car can't climb the hill with raw engine power — the agent must
+  learn to <strong>build momentum</strong> by rocking back and forth. Train a tabular agent live and
+  watch its value surface, policy, and strategy emerge.</p>
+
+  <main class="layout">
+    <!-- Controls -->
+    <section class="panel controls">
+      <h2>Agent</h2>
+      <label class="f"><span>Algorithm</span>
+        <select id="algo"><option value="qlearning">Q-Learning (off-policy)</option><option value="sarsa">SARSA (on-policy)</option></select>
+      </label>
+      <label class="f"><span>Learning rate α <em id="alphaV"></em></span><input id="alpha" type="range" min="0.05" max="0.5" step="0.05" value="0.2" /></label>
+      <label class="f"><span>Discount γ <em id="gammaV"></em></span><input id="gamma" type="range" min="0.8" max="0.999" step="0.001" value="0.99" /></label>
+      <label class="f"><span>Exploration decay <em id="decayV"></em></span><input id="decay" type="range" min="0.99" max="0.9995" step="0.0005" value="0.999" /></label>
+      <label class="f"><span>Episodes <em id="episodesV"></em></span><input id="episodes" type="range" min="500" max="6000" step="500" value="4000" /></label>
+      <label class="f check"><input id="shaping" type="checkbox" /><span>Reward shaping (speed bonus)</span></label>
+      <div class="btns">
+        <button id="train" class="btn primary">▶ Train</button>
+        <button id="reset" class="btn">Reset</button>
+      </div>
+      <div class="live"><span>Episode <b id="epInfo">0 / 0</b></span><span>ε <b id="epsInfo">1.000</b></span></div>
+    </section>
+
+    <!-- Hill + curve -->
+    <section class="panel">
+      <h2>The climb <button id="rollout" class="btn small">▶ Run greedy episode</button></h2>
+      <canvas id="hill" width="380" height="170"></canvas>
+      <h3>Learning curve <span class="muted">(reward per episode — higher = fewer steps)</span></h3>
+      <canvas id="curve" width="380" height="150"></canvas>
+    </section>
+
+    <!-- Metrics -->
+    <section class="panel">
+      <h2>Greedy evaluation <button id="evalBtn" class="btn small">Evaluate (100)</button></h2>
+      <div id="metrics" class="metrics"></div>
+      <h3>Phase portrait <span class="muted">(position × velocity — the momentum loops)</span></h3>
+      <canvas id="phase" width="220" height="170"></canvas>
+    </section>
+  </main>
+
+  <!-- Heatmaps -->
+  <section class="panel grids">
+    <h2>What the agent learned <span class="muted">— x: position (valley → goal), y: velocity (− bottom, + top)</span></h2>
+    <div class="grid-row">
+      <figure><canvas id="value" width="160" height="160"></canvas><figcaption>Value surface <span class="muted">V(s)=maxₐ Q</span></figcaption></figure>
+      <figure><canvas id="policy" width="160" height="160"></canvas>
+        <figcaption>Greedy policy
+          <span class="key"><i style="background:#ef4444"></i>push left <i style="background:#cbd5e1"></i>idle <i style="background:#22c55e"></i>push right</span>
+        </figcaption>
+      </figure>
+      <figure><canvas id="visit" width="160" height="160"></canvas><figcaption>Visit frequency <span class="muted">(log)</span></figcaption></figure>
+    </div>
+  </section>
+
+  <footer class="foot">Ascent · tabular Q-Learning / SARSA · built from scratch · MIT · trains 100% in your browser</footer>
+
+  <script src="rl.js"></script>
+  <script src="viz.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
